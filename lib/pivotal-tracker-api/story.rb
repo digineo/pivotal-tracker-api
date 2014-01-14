@@ -14,7 +14,7 @@ module Scorer
       ['url', 'name', 'description', 'story_type',
        'estimate', 'current_state', 'requested_by',
        'owned_by', 'labels', 'integration_id',
-       'deadline', 'comments', 'tasks']
+       'deadline', 'comments', 'tasks', 'created_at', 'updated_at']
     end
 
     def self.parse_json_story(json_story, project_id)
@@ -26,6 +26,8 @@ module Scorer
         id: story_id,
         url: json_story[:url],
         project_id: project_id,
+        created_at: DateTime.parse(json_story[:created_at].to_s).to_s,
+        updated_at: DateTime.parse(json_story[:updated_at].to_s).to_s,
         name: json_story[:name],
         description: json_story[:description],
         story_type: json_story[:story_type],
