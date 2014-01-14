@@ -58,7 +58,7 @@ module Scorer
         Scorer::Comment.new({
           id: note[:id].to_i,
           text: note[:text],
-          author: note[:author],
+          person_id: note[:person_id],
           created_at: DateTime.parse(note[:created_at].to_s).to_s,
           story: story
         })
