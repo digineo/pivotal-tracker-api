@@ -46,69 +46,52 @@ module Scorer
     end
 
     def self.parse_json_stories(json_stories, project_id)
-      stories = Array.new
-      json_stories.each do |story|
-        stories << parse_json_story(story, project_id)
+      json_stories.map do |story|
+        parse_json_story(story, project_id)
       end
-      stories
     end
 
     def self.parse_notes(notes, story)
-      comments = Array.new
-      if notes
-        notes.each do |note|
-          comments << Scorer::Comment.new({
-            id: note[:id].to_i,
-            text: note[:text],
-            author: note[:author],
-            created_at: DateTime.parse(note[:created_at].to_s).to_s,
-            story: story
-          })
-        end
+      (notes || []).map do |note|
+        Scorer::Comment.new({
+          id: note[:id].to_i,
+          text: note[:text],
+          author: note[:author],
+          created_at: DateTime.parse(note[:created_at].to_s).to_s,
+          story: story
+        })
       end
-      comments
     end
 
     def self.parse_tasks(tasks, story)
-      parsed_tasks = Array.new
-      if tasks
-        tasks.each do |task|
-          parsed_tasks <<  Scorer::Task.new({
-            id: task[:id].to_i,
-            description: task[:description],
-            complete: task[:complete],
-            created_at: DateTime.parse(task[:created_at].to_s).to_s,
-            story: story
-          })
-        end
+      (tasks || []).map do |task|
+        Scorer::Task.new({
+          id: task[:id].to_i,
+          description: task[:description],
+          complete: task[:complete],
+          created_at: DateTime.parse(task[:created_at].to_s).to_s,
+          story: story
+        })
       end
-      parsed_tasks
     end
 
     def self.parse_attachments(attachments)
-      parsed_attachments = Array.new
-      if attachments
-        attachments.each do |file|
-          attachment = Scorer::Attachment.new
-          attachment.id = file[:id].to_i
-          attachment.filename = file[:filename]
-          attachment.description = file[:description]
-          attachment.uploaded_by = file[:uploaded_by]
-          attachment.uploaded_at = file[:uploaded_at]
-          attachment.url = file[:url]
-          attachment.status = file[:status]
-          parsed_attachments << attachment
-        end
+      (attachments || []).map do |file|
+        attachment = Scorer::Attachment.new
+        attachment.id = file[:id].to_i
+        attachment.filename = file[:filename]
+        attachment.description = file[:description]
+        attachment.uploaded_by = file[:uploaded_by]
+        attachment.uploaded_at = file[:uploaded_at]
+        attachment.url = file[:url]
+        attachment.status = file[:status]
       end
-      parsed_attachments
     end
 
     def self.parse_labels(labels)
-      parsed_labels = ''
-      labels.each do |label|
-        parsed_labels = parsed_labels + "#{label[:name]},"
-      end
-      parsed_labels
+      labels.map do |label|
+        label[:name]
+      end.join(",")
     end
 
     def self.get_story_started_at(project_id, story_id)

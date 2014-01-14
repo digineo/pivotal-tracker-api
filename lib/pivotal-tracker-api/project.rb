@@ -15,11 +15,9 @@ module Scorer
       end
 
       def parse_json_projects(json_projects)
-        projects = Array.new
-        json_projects.each do |project|
-          projects << parse_json_project(project)
+        json_projects.map do |project|
+          parse_json_project(project)
         end
-        projects
       end
 
       def parse_json_project(project)
